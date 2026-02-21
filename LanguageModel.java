@@ -101,26 +101,27 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-    if (initialText.length() >= textLength) {
-        return initialText;
-    }
-
-    String generatedText = initialText;
-    String window = generatedText.substring(generatedText.length() - windowLength);
-
-    while (generatedText.length() < textLength) {
-        List probs = CharDataMap.get(window);
-
-        if (probs == null) {
-            break;
+  
+        if (initialText.length() < windowLength) {
+            return initialText;
         }
-        char nextChar = getRandomChar(probs);
-        generatedText += nextChar;
-        window = generatedText.substring(generatedText.length() - windowLength);
-    }
 
-    return generatedText;
-}
+        String generatedText = initialText;
+        String window = generatedText.substring(generatedText.length() - windowLength);
+
+        while (generatedText.length() < initialText.length() + textLength) {
+            List probs = CharDataMap.get(window);
+
+            if (probs == null) {
+                break;
+            }
+            char nextChar = getRandomChar(probs);
+            generatedText += nextChar;
+            window = generatedText.substring(generatedText.length() - windowLength);
+        }
+
+        return generatedText;
+    }
 
     /** Returns a string representing the map of this language model. */
 	public String toString() {
